@@ -1,0 +1,5 @@
+refactor the markdown of the main.ipynb file
+create the "all in one" section
+create architecture excalidraw image
+create walkthrough of the process
+create readme file

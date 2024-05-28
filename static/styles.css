@@ -1,0 +1,105 @@
+@font-face {
+    font-family: "MangaFont";
+    src: url("../fonts/mangat.ttf") format("truetype");
+}
+
+body {
+    font-family: "MangaFont", Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 0;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+}
+
+.container {
+    padding: 20px;
+}
+
+input[type="file"] {
+    margin: 20px 0;
+    padding: 10px;
+    border: 2px solid #4caf50;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+input[type="file"]:hover {
+    border-color: #45a049;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+.spinner {
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #4caf50;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+    margin: 20px auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.images-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.image-wrapper {
+    width: 45%;
+}
+
+.image-wrapper h3 {
+    margin-bottom: 10px;
+}
+
+#fileInput::file-selector-button {
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#fileInput::file-selector-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}

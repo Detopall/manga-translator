@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Manga Translator</title>
+		<link rel="stylesheet" href="/static/styles.css" />
+	</head>
+	<body>
+		<header>
+			<h1>Manga Translator</h1>
+		</header>
+		<div class="container">
+			<input type="file" id="fileInput" accept="image/*" />
+			<br />
+			<button id="translateButton" onclick="predict()">Translate</button>
+			<div id="spinner" class="spinner" style="display: none"></div>
+			<div class="images-container">
+				<div class="image-wrapper">
+					<h3>Original Image</h3>
+					<img
+						id="inputImage"
+						alt="Selected Manga"
+						style="max-width: 100%"
+					/>
+				</div>
+				<div class="image-wrapper">
+					<h3>Translated Image</h3>
+					<img
+						id="outputImage"
+						alt="Translated Manga"
+						style="max-width: 100%; display: none"
+					/>
+					<button>
+						<a
+							id="downloadButton"
+							href="#"
+							download="translated_manga.jpg"
+							style="display: none"
+							>Download Translated Image</a
+						>
+					</button>
+				</div>
+			</div>
+		</div>
+		<script src="/static/index.js"></script>
+	</body>
+</html>
