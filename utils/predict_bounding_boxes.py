@@ -4,10 +4,11 @@ in images using the trained Object Detection model.
 """
 import uuid
 import os
+from typing import List
 from PIL import Image
 from ultralytics import YOLO
 
-def predict_bounding_boxes(model: YOLO, image_path: str) -> YOLO:
+def predict_bounding_boxes(model: YOLO, image_path: str) -> List:
 	"""
 	Predict bounding boxes for text in images using the trained Object Detection model.
 	"""
@@ -36,4 +37,4 @@ def predict_bounding_boxes(model: YOLO, image_path: str) -> YOLO:
 		# save each image under a unique name
 		cropped_image.save(f"{bounding_box_images_path}/{uuid.uuid4()}.png")
 	
-	return result
+	return result.boxes.data.tolist()

@@ -6,6 +6,7 @@ import os
 import io
 import base64
 
+import numpy as np
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -16,9 +17,11 @@ import uvicorn
 from ultralytics import YOLO
 
 from utils.predict_bounding_boxes import predict_bounding_boxes
-from utils.manga_ocr import get_text_from_images
+from utils.manga_ocr import get_text_from_image
 from utils.translate_manga import translate_manga
-from utils.write_text_on_image import write_text
+from utils.process_contour import process_contour
+from utils.write_text_on_image import add_text
+
 
 # Load the object detection model
 best_model_path = "./model_creation/runs/detect/train5"
@@ -51,30 +54,36 @@ def predict(request: dict):
 	# Decode base64-encoded image
 	image = base64.b64decode(image)
 	image = Image.open(io.BytesIO(image))
+	image_path = "image.png"
+	translated_image_path = "translated_image.png"
 
-	# Save the image
-	image.save("image.jpg")
+	# Save the image locally
+	image.save(image_path)
 
-	# Perform object detection
-	result = predict_bounding_boxes(object_detection_model, "image.jpg")
+	results = predict_bounding_boxes(object_detection_model, image_path)
+	image = np.array(image)
 
-	# Extract text from images
-	text_list = get_text_from_images("./bounding_box_images")
+	for result in results:
+			x1, y1, x2, y2, _, _ = result
+			detected_image = image[int(y1):int(y2), int(x1):int(x2)]
+			im = Image.fromarray(np.uint8((detected_image)*255))
+			text = get_text_from_image(im)
+			detected_image, cont = process_contour(detected_image)
+			text_translated = translate_manga(text)
+			add_text(detected_image, text_translated, cont)
 
-	# Translate the manga
-	translated_text_list = translate_manga(text_list)
-
-	# Write translation text on image
-	translated_image = write_text(result, translated_text_list, "image.jpg")
+	# Display the translated image
+	result_image = Image.fromarray(image, 'RGB')
+	result_image.save(translated_image_path)
 
 	# Convert the image to base64
 	buff = io.BytesIO()
-	translated_image.save(buff, format="JPEG")
+	result_image.save(buff, format="PNG")
 	img_str = base64.b64encode(buff.getvalue()).decode("utf-8")
 
 	# Clean up
-	os.remove("image.jpg")
-	os.remove("translated_image.png")
+	os.remove(image_path)
+	os.remove(translated_image_path)
 
 	return {"image": img_str}
 
