@@ -5,6 +5,7 @@ This file contains the FastAPI application that serves the web interface and han
 import os
 import io
 import base64
+from typing import Dict
 
 import numpy as np
 from fastapi import FastAPI
@@ -48,7 +49,7 @@ def home(request: Request):
 
 
 @app.post("/predict")
-def predict(request: dict):
+def predict(request: Dict):
 	image = request["image"]
 
 	# Decode base64-encoded image
