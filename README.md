@@ -69,4 +69,4 @@ POST /predict
 
 The following video is a screen recording of the client sending a manga image to the server, and the server detecting the speech bubbles, extracting the text, and translating the text from Japanese to English.
 
-[![Manga Translator](./assets/MangaTranslator.png)](https://www.youtube.com/watch?v=aEOpx1_CUGI)
+[![Manga Translator](./assets/MangaTranslator.png)](https://www.youtube.com/watch?v=P0VZu4whrz4)
