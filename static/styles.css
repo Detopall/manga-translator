@@ -26,6 +26,14 @@ a {
     padding: 20px;
 }
 
+.actions {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-flow: column wrap;
+    gap: 1rem;
+}
+
 input[type="file"] {
     margin: 20px 0;
     padding: 10px;

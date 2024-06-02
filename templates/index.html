@@ -9,20 +9,32 @@
 	<body>
 		<header>
 			<h1>Manga Translator</h1>
+			<p>
+				Translate your manga panels from <b>Japanese</b> to
+				<b>English</b>!
+			</p>
+			<p>
+				Make sure the image is clear, black and white, and has text in
+				Japanese.
+			</p>
 		</header>
 		<div class="container">
-			<input type="file" id="fileInput" accept="image/*" />
-			<br />
-			<button id="translateButton" onclick="predict()">Translate</button>
+			<div class="actions">
+				<input type="file" id="fileInput" accept="image/*" />
+				<button id="translateButton" onclick="predict()">
+					Translate
+				</button>
+				<button id="downloadButton" style="display: none">
+					<a href="#" download="translated_manga.jpg">
+						Download Translated Image
+					</a>
+				</button>
+			</div>
 			<div id="spinner" class="spinner" style="display: none"></div>
 			<div class="images-container">
 				<div class="image-wrapper">
 					<h3>Original Image</h3>
-					<img
-						id="inputImage"
-						alt="Selected Manga"
-						style="max-width: 100%"
-					/>
+					<img id="inputImage" style="max-width: 100%" />
 				</div>
 				<div class="image-wrapper">
 					<h3>Translated Image</h3>
@@ -31,15 +43,6 @@
 						alt="Translated Manga"
 						style="max-width: 100%; display: none"
 					/>
-					<button>
-						<a
-							id="downloadButton"
-							href="#"
-							download="translated_manga.jpg"
-							style="display: none"
-							>Download Translated Image</a
-						>
-					</button>
 				</div>
 			</div>
 		</div>

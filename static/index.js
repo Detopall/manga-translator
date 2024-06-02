@@ -1,19 +1,23 @@
 "use strict";
 
-async function predict() {
-	const fileInput = document.getElementById('fileInput');
-	const translateButton = document.getElementById('translateButton');
-	const spinner = document.getElementById('spinner');
-	const inputImage = document.getElementById('inputImage');
-	const outputImage = document.getElementById('outputImage');
-	const downloadButton = document.getElementById('downloadButton');
+const fileInput = document.getElementById('fileInput');
+const translateButton = document.getElementById('translateButton');
+const spinner = document.getElementById('spinner');
+const inputImage = document.getElementById('inputImage');
+const outputImage = document.getElementById('outputImage');
+const downloadButton = document.getElementById('downloadButton');
 
-	downloadButton.style.display = 'none';
+downloadButton.style.display = 'none';
 
+fileInput.addEventListener('change', () => {
 	if (fileInput.files.length === 0) {
 		alert('Please select an image file.');
 		return;
 	}
+
+	// Clear the previous images
+	inputImage.src = '';
+	outputImage.src = '';
 
 	const file = fileInput.files[0];
 	const reader = new FileReader();
@@ -25,9 +29,16 @@ async function predict() {
 	};
 
 	reader.readAsDataURL(file);
+});
 
-	translateButton.style.display = 'none';
-	spinner.style.display = 'block';
+async function predict() {
+	if (fileInput.files.length === 0) {
+		alert('Please select an image file.');
+		return;
+	}
+
+	const file = fileInput.files[0];
+	const reader = new FileReader();
 
 	reader.onloadend = async function () {
 		const base64Image = reader.result.split(',')[1];
@@ -42,16 +53,29 @@ async function predict() {
 
 		const result = await response.json();
 		if (response.status !== 200) {
-			alert(result.error);
+			alert(result.message);
+
+			// Reset the input
+			fileInput.value = '';
+			inputImage.style.display = 'none';
+			outputImage.style.display = 'none';
+			spinner.style.display = 'none';
+			downloadButton.style.display = 'none';
+			translateButton.style.display = 'block';
 			return;
 		}
+
 		outputImage.src = `data:image/jpeg;base64,${result.image}`;
 		outputImage.style.display = 'block';
-		downloadButton.href = outputImage.src;
+		downloadButton.querySelector('a').href = outputImage.src;
 		downloadButton.style.display = 'block';
 
 		translateButton.style.display = 'inline-block';
 		spinner.style.display = 'none';
-
 	};
+
+	reader.readAsDataURL(file);
+
+	translateButton.style.display = 'none';
+	spinner.style.display = 'block';
 }

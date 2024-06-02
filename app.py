@@ -9,8 +9,10 @@ from typing import Dict
 
 import numpy as np
 from fastapi import FastAPI
+from fastapi import status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from starlette.requests import Request
 from PIL import Image
@@ -50,44 +52,53 @@ def home(request: Request):
 
 @app.post("/predict")
 def predict(request: Dict):
-	image = request["image"]
+	try:
 
-	# Decode base64-encoded image
-	image = base64.b64decode(image)
-	image = Image.open(io.BytesIO(image))
-	image_path = "image.png"
-	translated_image_path = "translated_image.png"
+		image = request["image"]
 
-	# Save the image locally
-	image.save(image_path)
+		# Decode base64-encoded image
+		image = base64.b64decode(image)
+		image = Image.open(io.BytesIO(image))
+		image_path = "image.png"
+		translated_image_path = "translated_image.png"
 
-	results = predict_bounding_boxes(object_detection_model, image_path)
-	image = np.array(image)
+		# Save the image locally
+		image.save(image_path)
 
-	for result in results:
-			x1, y1, x2, y2, _, _ = result
-			detected_image = image[int(y1):int(y2), int(x1):int(x2)]
-			im = Image.fromarray(np.uint8((detected_image)*255))
-			text = get_text_from_image(im)
-			detected_image, cont = process_contour(detected_image)
-			text_translated = translate_manga(text)
-			add_text(detected_image, text_translated, cont)
+		results = predict_bounding_boxes(object_detection_model, image_path)
+		image = np.array(image)
 
-	# Display the translated image
-	result_image = Image.fromarray(image, 'RGB')
-	result_image.save(translated_image_path)
+		for result in results:
+				x1, y1, x2, y2, _, _ = result
+				detected_image = image[int(y1):int(y2), int(x1):int(x2)]
+				im = Image.fromarray(np.uint8((detected_image)*255))
+				text = get_text_from_image(im)
+				detected_image, cont = process_contour(detected_image)
+				text_translated = translate_manga(text)
+				add_text(detected_image, text_translated, cont)
 
-	# Convert the image to base64
-	buff = io.BytesIO()
-	result_image.save(buff, format="PNG")
-	img_str = base64.b64encode(buff.getvalue()).decode("utf-8")
+		# Display the translated image
+		result_image = Image.fromarray(image, 'RGB')
+		result_image.save(translated_image_path)
 
-	# Clean up
-	os.remove(image_path)
-	os.remove(translated_image_path)
+		# Convert the image to base64
+		buff = io.BytesIO()
+		result_image.save(buff, format="PNG")
+		img_str = base64.b64encode(buff.getvalue()).decode("utf-8")
 
-	return {"image": img_str}
+		# Clean up
+		os.remove(image_path)
+		os.remove(translated_image_path)
 
+		return {"image": img_str}
+	except Exception as e:
+		# Return with status code 500 (Internal Server Error) if an error occurs
+		return JSONResponse(
+                status_code=500,
+                content={
+                         "code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                         "message": "Internal Server Error"}
+            )
 
 if __name__ == '__main__':
 	uvicorn.run('app:app', host='localhost', port=8000, reload=True)
