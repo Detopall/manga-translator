@@ -1,14 +1,15 @@
 # Manga Translator
 
-- [Manga Translator](#manga-translator)
-  - [Introduction](#introduction)
-  - [Approach](#approach)
-    - [Data Collection](#data-collection)
-    - [Yolov8](#yolov8)
-    - [Manga-ocr](#manga-ocr)
-    - [Deep-translator](#deep-translator)
-  - [Server](#server)
-  - [Demo](#demo)
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Approach](#approach)
+  - [Data Collection](#data-collection)
+  - [Yolov8](#yolov8)
+  - [Manga-ocr](#manga-ocr)
+  - [Deep-translator](#deep-translator)
+- [Server](#server)
+- [Demo](#demo)
 
 ## Introduction
 
