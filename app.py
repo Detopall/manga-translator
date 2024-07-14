@@ -56,6 +56,14 @@ def predict(request: Dict):
 
 		image = request["image"]
 
+		image_info = {
+			"detected_language": "",
+			"translated_language": "",
+			"bounding_boxes": [],
+			"text": [],
+			"translated_text": []
+		}
+
 		# Decode base64-encoded image
 		image = base64.b64decode(image)
 		image = Image.open(io.BytesIO(image))
@@ -74,8 +82,15 @@ def predict(request: Dict):
 				im = Image.fromarray(np.uint8((detected_image)*255))
 				text = get_text_from_image(im)
 				detected_image, cont = process_contour(detected_image)
-				text_translated = translate_manga(text)
+				text_translated = translate_manga(text, source_lang="auto", target_lang="en")
 				add_text(detected_image, text_translated, cont)
+
+				image_info["bounding_boxes"].append(result)
+				image_info["text"].append(text)
+				image_info["translated_text"].append(text_translated)
+				image_info["detected_language"] = "auto"
+				image_info["translated_language"] = "en"
+
 
 		# Display the translated image
 		result_image = Image.fromarray(image, 'RGB')
@@ -90,7 +105,8 @@ def predict(request: Dict):
 		os.remove(image_path)
 		os.remove(translated_image_path)
 
-		return {"image": img_str}
+		return {"image": img_str, "image_info": image_info}
+
 	except Exception as e:
 		# Return with status code 500 (Internal Server Error) if an error occurs
 		return JSONResponse(
