@@ -9,6 +9,12 @@ def get_text_from_image(image):
 	"""
 	Extract text from images using manga_ocr.
 	"""
-	mocr = MangaOcr()
+	print(image)
 
-	return mocr(image)
+	try:
+		mocr = MangaOcr()
+		result = mocr(image)
+		return result
+	except Exception as e:
+		print(f"An error occurred: {str(e)}")
+		return None

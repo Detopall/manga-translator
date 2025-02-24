@@ -31,10 +31,9 @@ def predict_bounding_boxes(model: YOLO, image_path: str) -> List:
 		label = result.names[box.cls[0].item()]
 		coords = [round(x) for x in box.xyxy[0].tolist()]
 		prob = round(box.conf[0].item(), 4)
-		print("Object: {}\nCoordinates: {}\nProbability: {}".format(label, coords, prob))
 		cropped_image = image.crop(coords)
 
 		# save each image under a unique name
 		cropped_image.save(f"{bounding_box_images_path}/{uuid.uuid4()}.png")
-	
+
 	return result.boxes.data.tolist()
