@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
@@ -28,6 +28,7 @@
 		<div class="container">
 			<div class="actions">
 				<input type="file" id="fileInput" accept="image/*" />
+				<select id="targetLanguage" name="targetLanguage"></select>
 				<button id="translateButton" onclick="predict()">Translate</button>
 				<button id="downloadButton" style="display: none">
 					<a id="downloadLink" href="#" download>Download Translated Image</a>

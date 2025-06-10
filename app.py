@@ -26,10 +26,7 @@ object_detection_model = YOLO(MODEL_PATH)
 app = FastAPI()
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"]
+    CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"]
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -43,19 +40,32 @@ def decode_base64_image(encoded_image: str) -> Image.Image:
     return image.convert("RGB")
 
 
-def extract_text_from_regions(image: np.ndarray, results: list) -> Dict[str, Any]:
-    image_info = {"detected_language": "auto", "translated_language": "en", "bounding_boxes": [], "text": [], "translated_text": []}
+def extract_text_from_regions(
+    image: np.ndarray, target_lang: str, results: list
+) -> Dict[str, Any]:
+    image_info = {
+        "detected_language": "auto",
+        "translated_language": "en",
+        "bounding_boxes": [],
+        "text": [],
+        "translated_text": [],
+    }
 
     for result in results:
         x1, y1, x2, y2, _, _ = result
-        detected_image = image[int(y1):int(y2), int(x1):int(x2)]
+        detected_image = image[int(y1) : int(y2), int(x1) : int(x2)]
         if detected_image.shape[-1] == 4:
             detected_image = detected_image[:, :, :3]
         im = Image.fromarray(np.uint8(detected_image * 255))
         text = get_text_from_image(im)
 
         processed_image, cont = process_contour(detected_image)
-        translated_text = translate_manga(text, source_lang="auto", target_lang="en")
+        translated_text = translate_manga(
+            text, target_lang=target_lang, source_lang="ja-JP"
+        )
+        if translated_text is None:
+            translated_text = "Translation failed"
+
         add_text(processed_image, translated_text, cont)
 
         image_info["bounding_boxes"].append(result)
@@ -82,11 +92,13 @@ def predict(request: Dict[str, Any]):
         image = decode_base64_image(request["image"])
         image.save("image.png")
 
+        target_lang = request["target_lang"]
+
         results = predict_bounding_boxes(object_detection_model, "image.png")
         np_image = np.array(image)
-        image_info = extract_text_from_regions(np_image, results)
+        image_info = extract_text_from_regions(np_image, target_lang, results)
 
-        result_image = Image.fromarray(np_image, 'RGB')
+        result_image = Image.fromarray(np_image, "RGB")
         result_image.save("translated_image.png")
 
         img_str = convert_image_to_base64(result_image)
@@ -100,7 +112,10 @@ def predict(request: Dict[str, Any]):
         print(e)
         return JSONResponse(
             status_code=500,
-            content={"code": status.HTTP_500_INTERNAL_SERVER_ERROR, "message": "Internal Server Error"}
+            content={
+                "code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+                "message": "Internal Server Error",
+            },
         )
 
 

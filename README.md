@@ -13,7 +13,7 @@
 
 ## Introduction
 
-I love reading manga, and I can't wait for the next chapter of my favorite manga to be released. However, the newest chapters are usually in Japanese, and they are translated to English after some time. I want to read the newest chapters as soon as possible, so I decided to build a manga translator that can translate Japanese manga to English.
+I love reading manga, and I can't wait for the next chapter of my favorite manga to be released. However, the newest chapters are usually in Japanese, and they are translated to English after some time. I want to read the newest chapters as soon as possible, so I decided to build a manga translator that can translate Japanese manga to English. (**NEW** I've added support for multiple languages, which include Arabic, Greek, Cyrillic and other non Latin languages.)
 
 ## Approach
 

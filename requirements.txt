@@ -7,3 +7,5 @@ deep-translator==1.11.4
 fastapi
 uvicorn==0.30.0
 torch==2.6.0
+python-bidi==0.6.6
+arabic-reshaper==3.0.0
