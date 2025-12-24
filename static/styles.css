@@ -20,12 +20,23 @@ header {
 
 .header-content {
 	max-width: 1000px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 1rem;
 	margin: 0 auto;
 }
 
 h1 {
 	font-size: 2.5rem;
 	margin-bottom: 10px;
+}
+
+h2 {
+	font-size: 2rem;
+	margin: 30px 0 20px 0;
+	color: #333;
 }
 
 p {
@@ -54,6 +65,8 @@ a.github-link:hover {
 
 .container {
 	padding: 40px 20px;
+	max-width: 1400px;
+	margin: 0 auto;
 }
 
 .actions {
@@ -62,19 +75,33 @@ a.github-link:hover {
 	align-items: center;
 	flex-direction: column;
 	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+/* Language selectors */
+.language-selectors {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+}
+
+.language-group {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 5px;
+}
+
+.language-group label {
+	font-size: 0.9rem;
+	color: #333;
+	font-weight: bold;
 }
 
 #translateButton {
-	margin-bottom: 2rem;
-}
-
-#downloadButton {
-	margin-bottom: 2rem;
-}
-
-#downloadButton a {
-	text-decoration: none;
-	color: white;
+	margin-bottom: 1rem;
 }
 
 input[type="file"] {
@@ -106,9 +133,14 @@ button {
 		transform 0.3s;
 }
 
-button:hover {
+button:hover:not(:disabled) {
 	background-color: #4caf50;
 	transform: scale(1.05);
+}
+
+button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
 }
 
 .spinner {
@@ -125,32 +157,141 @@ button:hover {
 	0% {
 		transform: rotate(0deg);
 	}
+
 	100% {
 		transform: rotate(360deg);
 	}
 }
 
-.images-container {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
-	gap: 20px;
-	max-width: 1200px;
-	margin: 0 auto;
+/* Progress indicator */
+#progressContainer {
+	margin: 20px 0;
+	padding: 15px;
+	background-color: #e8f5e9;
+	border-radius: 8px;
+	border: 2px solid #388e3c;
 }
 
-.image-wrapper {
-	width: 45%;
+.progress-text {
+	font-size: 1.2rem;
+	color: #2c6e2f;
+	font-weight: bold;
+}
+
+/* Carousel styles */
+.carousel-container {
+	position: relative;
+	max-width: 1200px;
+	margin: 30px auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+}
+
+.carousel-content {
+	flex: 1;
+	overflow: hidden;
+}
+
+.carousel-item {
+	display: none;
+	animation: fadeIn 0.3s ease-in;
+}
+
+.carousel-item.active {
+	display: block;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.carousel-arrow {
+	background-color: #388e3c;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	font-size: 2rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, transform 0.3s;
+	flex-shrink: 0;
+}
+
+.carousel-arrow:hover:not(:disabled) {
+	background-color: #4caf50;
+	transform: scale(1.1);
+}
+
+.carousel-arrow:disabled {
+	background-color: #ccc;
+	cursor: not-allowed;
+	opacity: 0.5;
+}
+
+.carousel-arrow span {
+	line-height: 1;
+	display: block;
+}
+
+.carousel-counter {
+	text-align: center;
+	font-size: 1.2rem;
+	color: #333;
+	margin-top: 15px;
+	font-weight: bold;
+}
+
+.image-pair {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 20px;
 	background-color: #fff;
-	padding: 10px;
-	border-radius: 8px;
+	padding: 20px;
+	border-radius: 12px;
 	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.image-wrapper h3 {
+.image-section {
+	text-align: center;
+}
+
+.image-section h3 {
 	margin-bottom: 12px;
-	font-size: 1.5rem;
+	font-size: 1.3rem;
 	color: #333;
+}
+
+.image-section img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#downloadAllContainer {
+	text-align: center;
+}
+
+#downloadAllButton {
+	background-color: #1976d2;
+	font-size: 18px;
+	padding: 15px 30px;
+}
+
+#downloadAllButton:hover {
+	background-color: #1565c0;
 }
 
 #fileInput::file-selector-button {
@@ -182,9 +323,9 @@ select {
 		border-color 0.3s,
 		box-shadow 0.3s,
 		transform 0.3s;
-	margin: 20px 0;
 	outline: none;
 	font-family: "MangaFont", Arial, sans-serif;
+	min-width: 200px;
 }
 
 select:focus,
@@ -192,4 +333,209 @@ select:hover {
 	border-color: #4caf50;
 	box-shadow: 0 2px 8px rgba(76, 175, 80, 0.15);
 	transform: scale(1.02);
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+	.image-pair {
+		grid-template-columns: 1fr;
+	}
+
+	.carousel-container {
+		flex-direction: column;
+	}
+
+	.carousel-arrow {
+		width: 40px;
+		height: 40px;
+		font-size: 1.5rem;
+	}
+
+	.language-selectors {
+		flex-direction: column;
+		gap: 15px;
+	}
+}
+
+#languageInfo {
+	font-size: 0.8rem;
+	font-style: italic;
+	color: #999;
+	margin-top: 5px;
+}
+
+/* Fullscreen image overlay */
+.fullscreen-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.95);
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	visibility: hidden;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.fullscreen-overlay.active {
+	opacity: 1;
+	visibility: visible;
+}
+
+.fullscreen-image {
+	max-width: 95%;
+	max-height: 95%;
+	object-fit: contain;
+	cursor: zoom-out;
+	animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+	from {
+		transform: scale(0.8);
+		opacity: 0;
+	}
+
+	to {
+		transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.fullscreen-close {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	background-color: rgba(255, 255, 255, 0.2);
+	color: white;
+	border: 2px solid white;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	font-size: 2rem;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.3s, transform 0.3s;
+	line-height: 1;
+	padding: 0;
+}
+
+.fullscreen-close:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+	transform: scale(1.1);
+}
+
+/* Make images clickable */
+.image-section img {
+	cursor: zoom-in;
+	transition: transform 0.2s;
+}
+
+.image-section img:hover {
+	transform: scale(1.02);
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+	.image-pair {
+		grid-template-columns: 1fr;
+	}
+
+	.carousel-container {
+		flex-direction: column;
+	}
+
+	.carousel-arrow {
+		width: 40px;
+		height: 40px;
+		font-size: 1.5rem;
+	}
+
+	.language-selectors {
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	h1 {
+		font-size: 2rem;
+	}
+
+	h2 {
+		font-size: 1.5rem;
+	}
+
+	.container {
+		padding: 20px 10px;
+	}
+
+	select {
+		min-width: 150px;
+		font-size: 14px;
+	}
+
+	button {
+		font-size: 14px;
+		padding: 10px 20px;
+	}
+
+	.fullscreen-close {
+		width: 40px;
+		height: 40px;
+		font-size: 1.5rem;
+		top: 10px;
+		right: 10px;
+	}
+}
+
+/* Mobile touch improvements */
+@media (max-width: 600px) {
+	.carousel-arrow {
+		width: 35px;
+		height: 35px;
+		font-size: 1.2rem;
+	}
+
+	.carousel-counter {
+		font-size: 1rem;
+	}
+
+	.image-section h3 {
+		font-size: 1.1rem;
+	}
+
+	input[type="file"] {
+		font-size: 14px;
+		padding: 10px;
+	}
+
+	#downloadAllButton {
+		font-size: 16px;
+		padding: 12px 24px;
+	}
+
+	/* Improve touch targets */
+	button,
+	select,
+	input[type="file"] {
+		min-height: 44px;
+	}
+
+	/* Better spacing on small screens */
+	.actions {
+		gap: 0.75rem;
+	}
+
+	.language-group {
+		width: 100%;
+	}
+
+	.language-group select {
+		width: 100%;
+	}
 }

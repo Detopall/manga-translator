@@ -1,55 +1,73 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Manga Translator</title>
-		<link rel="stylesheet" href="/static/styles.css" />
-	</head>
-	<body>
-		<header>
-			<div class="header-content">
-				<h1>Manga Translator</h1>
-				<p>
-					Translate your manga panels from <b>Japanese</b> to <b>English</b>!
-				</p>
-				<p>
-					Make sure the image is clear, black and white, and has text in
-					Japanese.
-				</p>
-				<a
-					href="https://github.com/Detopall/manga-translator"
-					target="_blank"
-					class="github-link"
-					>View on GitHub</a
-				>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+	<title>Manga Translator</title>
+	<link rel="stylesheet" href="/static/styles.css" />
+</head>
+
+<body>
+	<header>
+		<div class="header-content">
+			<h1>Manga Translator</h1>
+			<p>
+				Translate your manga panels from <b>Japanese</b> to <b>English</b>!
+			</p>
+			<span id="languageInfo">(or from any language to any other language)</span>
+			<a href="https://github.com/Detopall/manga-translator" target="_blank" class="github-link">View on
+				GitHub</a>
+		</div>
+	</header>
+	<div class="container">
+		<div class="actions">
+			<input type="file" id="fileInput" accept="image/*" multiple />
+			<div class="language-selectors">
+				<div class="language-group">
+					<label for="sourceLanguage">Source Language:</label>
+					<select id="sourceLanguage" name="sourceLanguage"></select>
+				</div>
+				<div class="language-group">
+					<label for="targetLanguage">Target Language:</label>
+					<select id="targetLanguage" name="targetLanguage"></select>
+				</div>
 			</div>
-		</header>
-		<div class="container">
-			<div class="actions">
-				<input type="file" id="fileInput" accept="image/*" />
-				<select id="targetLanguage" name="targetLanguage"></select>
-				<button id="translateButton" onclick="predict()">Translate</button>
-				<button id="downloadButton" style="display: none">
-					<a id="downloadLink" href="#" download>Download Translated Image</a>
+			<button id="translateButton" onclick="predict()">Translate</button>
+		</div>
+		<div id="progressContainer" style="display: none">
+			<div class="progress-text">Processing <span id="currentImage">0</span> of <span id="totalImages">0</span>
+				images...</div>
+		</div>
+		<div id="spinner" class="spinner" style="display: none"></div>
+
+		<div id="resultsContainer" style="display: none">
+			<h2>Results</h2>
+			<div id="downloadAllContainer" style="margin: 20px 0">
+				<button id="downloadAllButton">Download All as Zip</button>
+			</div>
+
+			<!-- Carousel Container -->
+			<div id="carouselContainer" class="carousel-container">
+				<button class="carousel-arrow carousel-arrow-left" id="prevButton">
+					<span>&lt;</span>
+				</button>
+
+				<div id="carouselContent" class="carousel-content">
+					<!-- Images will be dynamically inserted here -->
+				</div>
+
+				<button class="carousel-arrow carousel-arrow-right" id="nextButton">
+					<span>&gt;</span>
 				</button>
 			</div>
-			<div id="spinner" class="spinner" style="display: none"></div>
-			<div class="images-container">
-				<div class="image-wrapper">
-					<h3>Original Image</h3>
-					<img id="inputImage" style="max-width: 100%" />
-				</div>
-				<div class="image-wrapper">
-					<h3>Translated Image</h3>
-					<img
-						id="outputImage"
-						alt="Translated Manga"
-						style="max-width: 100%; display: none"
-					/>
-				</div>
+
+			<div class="carousel-counter">
+				<span id="currentIndex">1</span> / <span id="totalCount">1</span>
 			</div>
 		</div>
-		<script src="/static/index.js"></script>
-	</body>
+	</div>
+	<script src="/static/index.js"></script>
+</body>
+
 </html>

@@ -38,24 +38,72 @@ def detect_script(text):
 
 
 def get_font_path(script):
-    if script == "Latin":
-        return "./fonts/NotoSans-Regular.ttf"
-    elif script == "Arabic":
-        return "./fonts/NotoNaskhArabic-Regular.ttf"
-    elif script == "Cyrillic":
-        return "./fonts/NotoSansCyrillic-Regular.ttf"
-    elif script == "Greek":
-        return "./fonts/NotoSansGreek-Regular.ttf"
-    else:
-        return "./fonts/NotoSans-Regular.ttf"
+    """Get the appropriate font path for the detected script with fallbacks"""
+    import os
+    
+    comprehensive_fonts = [
+        "/usr/share/fonts/google-noto-vf/NotoSans[wght].ttf",
+        "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf",
+        "/usr/share/fonts/google-noto/NotoSans-Regular.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+        "/usr/share/fonts/google-droid-sans-fonts/DroidSans.ttf",
+    ]
+    
+    script_specific_fonts = {
+        "Arabic": ["/usr/share/fonts/google-noto-vf/NotoSansArabic[wght].ttf",
+                   "./fonts/NotoNaskhArabic-Regular.ttf"],
+        "Cyrillic": ["./fonts/NotoSansCyrillic-Regular.ttf"],
+        "Greek": ["./fonts/NotoSansGreek-Regular.ttf"],
+    }
+    
+    if script in script_specific_fonts:
+        for font in script_specific_fonts[script]:
+            if os.path.exists(font):
+                print(f"Using script-specific font for {script}: {font}")
+                return font
+    
+    for font in comprehensive_fonts:
+        if os.path.exists(font):
+            print(f"Using comprehensive Unicode font: {font}")
+            return font
+    
+    local_fonts = [
+        "./fonts/NotoSans-Regular.ttf",
+        "./fonts/NotoNaskhArabic-Regular.ttf",
+    ]
+    
+    for font in local_fonts:
+        if os.path.exists(font):
+            print(f"Using local font: {font}")
+            return font
+    
+    system_fallbacks = [
+        "/System/Library/Fonts/Helvetica.ttc",
+        "/Windows/Fonts/arial.ttf",
+    ]
+    
+    for fallback in system_fallbacks:
+        if os.path.exists(fallback):
+            print(f"Using system fallback: {fallback}")
+            return fallback
+    
+    print("WARNING: No suitable font found, using default")
+    return "./fonts/NotoSans-Regular.ttf"
 
 
 def add_text(image: np.ndarray, text: str, contour: np.ndarray):
     script = detect_script(text)
     font_path = get_font_path(script)
+    
+    print(f"Detected script: {script}")
+    print(f"Using font: {font_path}")
+    print(f"Text to render: {text}")
+    
     if script == "Arabic":
         reshaped_text = arabic_reshaper.reshape(text)
         text = get_display(reshaped_text)
+    
     pil_image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(pil_image)
 
@@ -70,7 +118,14 @@ def add_text(image: np.ndarray, text: str, contour: np.ndarray):
     wrap_width = max(1, int(w * wrapping_ratio))
     wrapped_text = textwrap.fill(text, width=wrap_width, break_long_words=True)
 
-    font = ImageFont.truetype(font_path, size=font_size)
+    # Try to load font with error handling
+    try:
+        font = ImageFont.truetype(font_path, size=font_size)
+        print(f"Successfully loaded font: {font_path}")
+    except Exception as e:
+        print(f"Error loading font {font_path}: {e}")
+        print("Falling back to default font")
+        font = ImageFont.load_default()
 
     lines = wrapped_text.split("\n")
     total_text_height = (len(lines)) * line_height
@@ -86,7 +141,12 @@ def add_text(image: np.ndarray, text: str, contour: np.ndarray):
         wrapping_ratio = min(wrapping_ratio + 0.025, 0.5)
         wrap_width = max(1, int(w * wrapping_ratio))
         wrapped_text = textwrap.fill(text, width=wrap_width, break_long_words=True)
-        font = ImageFont.truetype(font_path, size=font_size)
+        
+        try:
+            font = ImageFont.truetype(font_path, size=font_size)
+        except Exception:
+            font = ImageFont.load_default()
+        
         lines = wrapped_text.split("\n")
         total_text_height = (len(lines)) * line_height
         iterations += 1
@@ -105,11 +165,22 @@ def add_text(image: np.ndarray, text: str, contour: np.ndarray):
     text_y = y + max(0, (h - actual_text_height) // 2)
 
     for line in lines:
-        text_length = draw.textlength(line, font=font)
+        try:
+            text_length = draw.textlength(line, font=font)
+        except Exception:
+            # Fallback for older PIL versions
+            text_length = len(line) * font_size * 0.6
+        
         text_x = x + max(
             0, (w - text_length) // 2
         )  # Ensure x coordinate is not negative
-        draw.text((text_x, text_y), line, font=font, fill=(0, 0, 0))
+        
+        try:
+            draw.text((text_x, text_y), line, font=font, fill=(0, 0, 0))
+            print(f"Drew text: '{line}' at ({text_x}, {text_y})")
+        except Exception as e:
+            print(f"Error drawing text '{line}': {e}")
+        
         text_y += line_height
 
     image[:, :, :] = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
