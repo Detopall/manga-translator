@@ -20,15 +20,19 @@ I love reading manga, and I can't wait for the next chapter of my favorite manga
 
 **NEW**: The application now supports multiple languages including Arabic, Greek, Cyrillic, and other non-Latin scripts, with customizable source and target language selection!
 
+> [!INFO] Tested using Python3.12
+
 ## Features
 
 ### Core Translation
+
 - **Automatic Speech Bubble Detection** - Uses YOLOv8 to identify text regions
 - **OCR Text Extraction** - Extracts Japanese text using manga-ocr
 - **Multi-language Translation** - Translate between 300+ languages
 - **Batch Processing** - Upload and translate multiple manga pages at once
 
 ### User Interface
+
 - **Modern Web Interface** - Clean, responsive design
 - **Carousel Navigation** - View translated pages one at a time with arrow keys
 - **Mobile Optimized** - Fully responsive for phones and tablets
@@ -37,6 +41,7 @@ I love reading manga, and I can't wait for the next chapter of my favorite manga
 - **Zip Download** - Download all translated images as a single zip file
 
 ### Performance
+
 - **GPU Acceleration** - Automatically uses GPU if available, falls back to CPU
 - **Fast Processing** - Optimized for quick translation
 
@@ -92,9 +97,9 @@ The server will start running on `http://localhost:8000`. You can access the web
 4. **Upload one or more manga images** using the file selector
 5. **Click "Translate"** to process the images
 6. **Navigate results** using:
-   - Left/Right arrow buttons on screen
-   - Keyboard arrow keys (<- ->)
-   - Click any image to view in fullscreen
+    - Left/Right arrow buttons on screen
+    - Keyboard arrow keys (<- ->)
+    - Click any image to view in fullscreen
 7. **Download results** using the "Download All as Zip" button
 
 ### API Endpoint
@@ -113,6 +118,7 @@ POST /predict
 ## Known Limitations
 
 ### OCR Accuracy
+
 - The OCR model is optimized for Japanese manga and may struggle with:
   - **Cyrillic alphabets** - May not fully recognize or translate correctly
   - **Stylized fonts** - Artistic or decorative text may be misread
@@ -120,12 +126,14 @@ POST /predict
   - **Vertical text** - Some vertical text layouts may be challenging
 
 ### Translation Quality
+
 - Translation quality depends on the source text clarity
 - Garbled OCR output will result in poor translations
 - Some context-specific phrases may not translate accurately
 - Mixed scripts (e.g., Japanese + English) may cause issues
 
 ### Recommendations
+
 - Use high-quality, clear manga images
 - Black and white images work best
 - Ensure text is clearly visible and not too stylized
