@@ -1,4 +1,4 @@
-python_requires>=3.12,<3.13
+#python_requires>=3.12,<3.13
 
 ipykernel==6.29.4
 pillow==10.3.0
